@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <title>Register Page</title>
+    </head>
+    <style>
+        .gradient-custom-3 {
+
+            background: #84fab0;
+            background: -webkit-linear-gradient(to right, rgba(132, 250, 176, 0.5), rgba(143, 211, 244, 0.5));
+            background: linear-gradient(to right, rgba(132, 250, 176, 0.5), rgba(143, 211, 244, 0.5))
+        }
+        .gradient-custom-4 {
+
+            background: #84fab0;
+            background: -webkit-linear-gradient(to right, rgba(132, 250, 176, 1), rgba(143, 211, 244, 1));
+            background: linear-gradient(to right, rgba(132, 250, 176, 1), rgba(143, 211, 244, 1))
+        }
+    </style>
+    <body>
+
+    <section class="vh-100 bg-image"
+             style="background-image: url('https://miro.medium.com/v2/resize:fit:720/format:webp/1*6Jp3vJWe7VFlFHZ9WhSJng.jpeg');">
+        <div class="mask d-flex align-items-center h-100 gradient-custom-3" style="opacity: 0.90">
+            <div class="container h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                        <div class="card" style="border-radius: 15px;">
+                            <div class="card-body p-5">
+                                <h2 class="text-uppercase text-center mb-5">Create an account</h2>
+
+                                <div th:if ="${FailAttemption}">
+                                    <div class="col-md-12" align="center">
+                                        <div class="alert alert-danger col-md-6" role="alert">
+                                            <p th:text="${FailAttemption}" >
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <form th:action="@{/register}" th:object="${UserDTO}" method="POST">
+
+                                    <div class="form-outline mb-4">
+                                        <input type="text" id="form3Example1cg" class="form-control form-control-lg" th:field="*{username}" />
+                                        <label class="form-label" for="form3Example1cg">First Name</label>
+                                        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <input type="text" id="form3Example1cg" class="form-control form-control-lg" th:field="*{userLastname}" />
+                                        <label class="form-label" for="form3Example1cg">Last Name</label>
+                                        <span th:if="${#fields.hasErrors('userLastname')}" th:errors="*{userLastname}"></span>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <input type="email" id="form3Example3cg" class="form-control form-control-lg" th:field="*{email}" />
+                                        <label class="form-label" for="form3Example3cg">Email</label>
+                                        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <input type="password" id="form3Example4cg" class="form-control form-control-lg" th:field="*{password}" />
+                                        <label class="form-label" for="form3Example4cg">Password</label>
+                                        <span th:if="${#fields.hasErrors('repeatPassword') }" th:errors="*{password}"></span>
+
+
+                                    </div>
+
+                                    <div class="form-outline mb-3">
+                                        <input type="password" id="form3Example4cdg" class="form-control form-control-lg" th:field="*{repeatPassword}" />
+                                        <label class="form-label" for="form3Example4cdg">Repeat your password</label>
+                                        <span th:if="${#fields.hasErrors('Password')}" th:errors="*{repeatPassword}"></span>
+                                    </div>
+
+
+                                    <div class="form-check form-check-inline d-flex justify-content-center mb-3">
+                                        <input class="form-check-input" type="checkbox" id="form2Example3g">
+                                            <label class="form-check-label" for="form2Example3g">
+                                                I agree to all statements in <a href="/login" class="text-body" target="_blank"><u>Terms of service</u></a>
+                                            </label>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center" style="">
+                                        <button type="submit"
+                                                class="btn btn-success btn-block btn-lg gradient-custom-3 text-body" style="background-color:aliceblue; width: 250px;">Register</button>
+                                    </div>
+
+                                    <p class="text-center text-muted mt-3 mb-1">Have already an account? <a href="/login"
+                                                                                                            class="fw-bold text-body"><u>Login here</u></a></p>
+                            </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</html>
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+    <title>Book Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <style>
+            .shorter-input {
+                max-width: 400px;
+            }
+            .btn{
+                background-color: #1DD14D;
+
+            }
+        </style>
+    </head>
+    <body class="p-3 m-0 border-0 bd-example m-0 border-0" style="background-color:#2c2f34">
+        <p class="text-center mt-4 font-weight-bold" style="font-size:25px; color:white;">Gutenberg Search Engine</p>
+
+    <div class="input-group input-group-lg d-flex justify-content-center mt-4">
+
+        <form action="/dashboard" method="POST" class="input-group input-group-lg d-flex justify-content-center mt-4">
+            <span class="input-group-text ml-2" id="inputGroup-sizing-lg">Search a Book</span>
+            <input type="text" name="query" class="form-control ml-2 shorter-input rounded" placeholder="Search a Book" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                <button type="submit" class="btn btn-primary btn-lg ml-2">Search</button>
+        </form>
+
+
+    </div>
+
+    <h1 class="text-center mt-4" style="color: white;">Book List</h1>
+    <ul class="text-center">
+        <li th:each="book : ${books}">
+            <span th:text="${book.title}"></span> - <span th:text="${book.author}"></span>
+        </li>
+    </ul>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
