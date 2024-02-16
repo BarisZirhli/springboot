@@ -1,28 +1,34 @@
 package gutenbergproject4cbu.demo.controller;
 
 import gutenbergproject4cbu.demo.DTO.UserDTO;
-import gutenbergproject4cbu.demo.service.UserService;
+import gutenbergproject4cbu.demo.configuration.Security;
+import gutenbergproject4cbu.demo.service.UserServiceImp;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequestMapping
+
 public class UserController {
 
-    @Autowired
-    private final UserService userService;
+    private final Security userSec;
+    private final UserServiceImp userService;
 
-    public UserController(UserService userService) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
+    public UserController(Security userSec, UserServiceImp userService) {
+        this.userSec = userSec;
         this.userService = userService;
-
     }
 
     @GetMapping("/login")
@@ -36,13 +42,18 @@ public class UserController {
 
     @PostMapping("/login")
     public String loginPOST(@RequestParam String email, @RequestParam String password) {
-        Authentication authentication = userService.authenticateUser(email, password);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        if (email.isEmpty() || password.isEmpty()) {
+            LOGGER.info("Login post was here");
+            return "redirect:/login";
+        }
+        Authentication authentication = userSec.authenticateUser(email, password);
+        LOGGER.info("Login post was here2");
 
         if (authentication != null && authentication.isAuthenticated()) {
             return "redirect:/dashboard";
         } else {
-            return "redirect:/login?error=Invalid+email+or+password";
+            return "redirect:/login";
         }
     }
 
@@ -54,9 +65,9 @@ public class UserController {
 
     @PostMapping("/")
     public String registerUser(@ModelAttribute("UserDTO") @Valid UserDTO userDTO, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors() || userService.findUserwithEmail(userDTO.getEmail())) {
+        if (bindingResult.hasErrors() || userService.existUserwithEmail(userDTO.getEmail())) {
             model.addAttribute("FailAttemption", "Registration Not Successful! Password or Email Invalid");
-            return "Register";
+            return "redirect:/";
         } else {
             model.addAttribute("SuccessAttemption", "Registration Successful!");
             userService.saveUser(userDTO);

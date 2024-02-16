@@ -4,6 +4,8 @@ gutenbergproject4cbu\demo\service\BookService.class
 gutenbergproject4cbu\demo\DemoApplication.class
 gutenbergproject4cbu\demo\controller\BookController.class
 gutenbergproject4cbu\demo\repository\UserRepository.class
+gutenbergproject4cbu\demo\configuration\Security.class
+gutenbergproject4cbu\demo\configuration\UserDetailsServicer.class
 gutenbergproject4cbu\demo\service\RoleService.class
 m.class
 gutenbergproject4cbu\demo\controller\RoleController.class

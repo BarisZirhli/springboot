@@ -8,8 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -94,7 +92,7 @@ public class User {
         this.userLastname = userLastname;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.role = (List<Role>) role;
 
     }
 }
