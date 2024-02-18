@@ -1,42 +1,26 @@
 package gutenbergproject4cbu.demo.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
-@Entity
 @Setter
 @Getter
 @AllArgsConstructor
-@GenericGenerator(name = "uuid2", strategy = "uuid2")
-@Table(name = "books")
+
 public class Book {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID, generator = "uuid2")
-    private String id;
-    private String name;
-    private Date releaseDate;
-    private List<String> authorInfos;
-    private String categoryID;
+    private int id;
     private String title;
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_book",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id"))
-    private List<User> users;
+    private List<Map<String, Object>> authors; // Çünkü bir kitap birden fazla yazar içerebilir
+    private List<String> subjects;
+    private List<String> bookshelves;
+    private List<String> languages;
+    private boolean copyright;
+    private String media_type;
+    private Map<String, String> formats;
+    private int download_count;
 
 }

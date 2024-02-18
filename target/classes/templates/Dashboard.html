@@ -13,6 +13,10 @@
                 background-color: #1DD14D;
 
             }
+            body{
+                color: black;
+
+            }
         </style>
     </head>
     <body class="p-3 m-0 border-0 bd-example m-0 border-0" style="background-color:#2c2f34">
@@ -26,16 +30,33 @@
                 <button type="submit" class="btn btn-primary btn-lg ml-2">Search</button>
         </form>
 
+        <div class="container mt-4" style="background-color: #2c2f34;">
+            <h1 class="text-center mt-4" style="color: white;">Book List</h1>
+            <div class="row row-cols-auto justify-content-center text-center">
+                <div class="col-lg-12">
+                    <div class="container mt-5">
+                        <div class="row row-cols-4">
+                            <div class="col-md-3 mb-4" th:each="book : ${books}">
+                                <div class="card h-100">
+                                    <img class="card-img-top mt-2" th:src="${book.formats['image/jpeg']}" alt="Book Cover">
+                                        <div class="card-body">
+                                            <h5 class="card-title" th:text="${book.title}">Kart Başlık</h5>
+                                            <ul class="list-group">
+                                                <li th:each="author : ${book.authors}" class="list-group-item" th:text="${author.name}"></li>
+                                            </ul>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 
-    <h1 class="text-center mt-4" style="color: white;">Book List</h1>
-    <ul class="text-center">
-        <li th:each="book : ${books}">
-            <span th:text="${book.title}"></span> - <span th:text="${book.author}"></span>
-        </li>
-    </ul>
-
+    <script></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

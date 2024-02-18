@@ -16,8 +16,9 @@ public class BookServiceImp implements BookService {
 
     @Override
     public String fetchBooks(String bookname) {
-        String apiUrl = "https://gutendex.com/books/" + bookname;
-        return restTemplate.getForObject(apiUrl, String.class);
+        String apiUrl = "https://gutendex.com/books/?search=" + bookname;
+        String respond = restTemplate.getForObject(apiUrl, String.class);
+        return respond;
     }
 
 }

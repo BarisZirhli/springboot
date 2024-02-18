@@ -11,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,23 +21,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Service
-public class UserServiceImp implements UserService {
+public class UserServiceImp implements UserService, UserDetailsService {
 
     @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-    
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImp.class);
+
+    public UserServiceImp(@Lazy UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder, @Lazy AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -43,7 +47,7 @@ public class UserServiceImp implements UserService {
         user.setId(UUID.randomUUID().toString());
         Role role = new Role();
         role.setRoleName("USER");
-        
+
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         userRepository.save(user);
@@ -51,8 +55,9 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void deleteUser(String email) {
-        User user = userRepository.findByEmail(email);
-        userRepository.delete(user);
+        Optional<User> user = userRepository.findByEmail(email);
+        User u = user.get();
+        userRepository.delete(u);
     }
 
     @Override
@@ -62,12 +67,23 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public boolean findUserwithEmail(String email) {
+    public boolean existUserwithEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
+    @Override
+    public User findUserByEmail(String email) {
+
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        return userOptional.orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+
+        Optional<User> user = userRepository.findByEmail(email);
+        User u = user.get();
+        LOGGER.info(u.getEmail());
         if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
@@ -75,10 +91,9 @@ public class UserServiceImp implements UserService {
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority("USER"));
 
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(u.getEmail(), u.getPassword(), authorities);
     }
 
-    @Override
     public Authentication authenticateUser(String email, String password) {
         UserDetails userDetails = loadUserByUsername(email);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
@@ -93,4 +108,5 @@ public class UserServiceImp implements UserService {
             throw new BadCredentialsException("Invalid credentials", e);
         }
     }
+
 }
