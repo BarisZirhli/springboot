@@ -88,4 +88,38 @@ public class User {
     }
 
 
+<<<<<<< HEAD
+=======
+    public void setFavouriteBooks(List<Book> favouriteBooks) {
+        this.favouriteBooks = favouriteBooks;
+    }
+
+    @Id
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
+    private String id;
+    private String username;
+    private String userLastname;
+    private String email;
+    private String password;
+
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    private List<Book> favouriteBooks;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> role;
+
+    public User(String userName, String userLastname, String email, String password) {
+        this.id = "";
+        this.username = userName;
+        this.userLastname = userLastname;
+        this.email = email;
+        this.password = password;
+        this.role = (List<Role>) role;
+
+    }
+>>>>>>> af5da07eb8f7d5e6b2c6769452f406ef468d3489
 }
