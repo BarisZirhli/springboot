@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestTemplate;
-import java.lang.Exception;
 
 @Configuration
 @EnableWebSecurity
@@ -28,18 +27,26 @@ public class Configurations {
         return new BCryptPasswordEncoder();
     }
 
+//    @Bean
+//    protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http.csrf(csrf -> csrf.disable())
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authorizeHttpRequests(auth -> auth
+//                .requestMatchers("/dashboard/**").hasRole("USER")
+//                .requestMatchers("/", "/login/").permitAll()
+//                .anyRequest().authenticated());
+//
+//        return http.build();
+//    }
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                
                 .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated());
 
         return http.build();
-
-        
     }
 
     @Bean
