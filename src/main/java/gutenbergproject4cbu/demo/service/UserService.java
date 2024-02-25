@@ -1,11 +1,10 @@
 package gutenbergproject4cbu.demo.service;
 
 import gutenbergproject4cbu.demo.DTO.UserDTO;
+import gutenbergproject4cbu.demo.exception.BookException;
+import gutenbergproject4cbu.demo.model.Book;
 import gutenbergproject4cbu.demo.model.User;
-<<<<<<< HEAD
-import java.util.Optional;
-=======
->>>>>>> af5da07eb8f7d5e6b2c6769452f406ef468d3489
+import java.util.List;
 
 public interface UserService {
 
@@ -18,5 +17,10 @@ public interface UserService {
     boolean existUserwithEmail(String email);
 
     User findUserByEmail(String email);
+    
+    void addFavoriteBook(Long bookId,String userId)throws BookException;
+    
+    List<Book> showBookList(String userId)throws BookException;
+
 
 }

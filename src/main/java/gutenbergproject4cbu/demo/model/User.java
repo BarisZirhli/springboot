@@ -1,6 +1,7 @@
 package gutenbergproject4cbu.demo.model;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,16 +36,25 @@ public class User {
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> role;
+    private List<Role> roles;
 
-    public User(String userName, String userLastname, String email, String password) {
-        this.id = "";
-        this.username = userName;
-        this.userLastname = userLastname;
-        this.email = email;
-        this.password = password;
-        this.role = (List<Role>) role;
+    @ElementCollection
+    private List<Long> favoriteBooks;
 
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+    
+    public List<Role> getRoles(){
+        return roles;
+    }
+
+    public void setFavoriteBooks(List<Long> favoriteBooks) {
+        this.favoriteBooks = favoriteBooks;
+    }
+
+    public List<Long> getFavoriteBooks() {
+        return favoriteBooks;
     }
 
     public String getId() {
@@ -87,39 +97,12 @@ public class User {
         this.password = password;
     }
 
-
-<<<<<<< HEAD
-=======
-    public void setFavouriteBooks(List<Book> favouriteBooks) {
-        this.favouriteBooks = favouriteBooks;
-    }
-
-    @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-    private String id;
-    private String username;
-    private String userLastname;
-    private String email;
-    private String password;
-
-    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL)
-    private List<Book> favouriteBooks;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> role;
-
     public User(String userName, String userLastname, String email, String password) {
-        this.id = "";
+
         this.username = userName;
         this.userLastname = userLastname;
         this.email = email;
         this.password = password;
-        this.role = (List<Role>) role;
 
     }
->>>>>>> af5da07eb8f7d5e6b2c6769452f406ef468d3489
 }

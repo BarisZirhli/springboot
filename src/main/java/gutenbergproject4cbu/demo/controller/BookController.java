@@ -1,8 +1,7 @@
 package gutenbergproject4cbu.demo.controller;
 
-import com.google.gson.Gson;
-import gutenbergproject4cbu.demo.DTO.Bookresponse;
 import gutenbergproject4cbu.demo.model.Book;
+import gutenbergproject4cbu.demo.model.User;
 import gutenbergproject4cbu.demo.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,8 +9,6 @@ import org.springframework.ui.Model;
 import org.slf4j.Logger;
 import java.util.List;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,17 +28,8 @@ public class BookController {
     @PostMapping("/dashboard")
     public String searchBooks(@RequestParam(name = "query", required = false) String query, Model model) {
         if (query != null && !query.isEmpty()) {
-            String response = bookService.fetchBooks(query);
-            Gson gson = new Gson();
-            Bookresponse bookResponse = gson.fromJson(response, Bookresponse.class);
-            List<Book> books = bookResponse.getResults();
-
-            for (Book book : books) {
-                System.out.println("Title: " + book.getTitle());
-                System.out.println("Author: " + book.getAuthors().get(0));
-                System.out.println();
-            }
-
+            List<Book> books = bookService.fetchBooks(query).getResults();
+            
             model.addAttribute("books", books);
         }
         return "/dashboard";
@@ -50,7 +38,10 @@ public class BookController {
     @GetMapping("/dashboard")
     public String showDashboard(Model model) {
         LOGGER.info("Dashboard page accessed.");
+        model.addAttribute("User", new  User());
         return "Dashboard";
     }
+    
+  
 
 }

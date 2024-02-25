@@ -41,7 +41,7 @@
                                 </div>
 
 
-                                <form th:action="@{/register}" th:object="${UserDTO}" method="POST">
+                                <form th:action="@{/}" th:object="${UserDTO}" method="POST">
 
                                     <div class="form-outline mb-4">
                                         <input type="text" id="form3Example1cg" class="form-control form-control-lg" th:field="*{username}" />
@@ -64,7 +64,7 @@
                                     <div class="form-outline mb-4">
                                         <input type="password" id="form3Example4cg" class="form-control form-control-lg" th:field="*{password}" />
                                         <label class="form-label" for="form3Example4cg">Password</label>
-                                        <span th:if="${#fields.hasErrors('repeatPassword') }" th:errors="*{password}"></span>
+                                        <span th:if="${#fields.hasErrors('Password') }" th:errors="*{password}"></span>
 
 
                                     </div>
@@ -72,7 +72,7 @@
                                     <div class="form-outline mb-3">
                                         <input type="password" id="form3Example4cdg" class="form-control form-control-lg" th:field="*{repeatPassword}" />
                                         <label class="form-label" for="form3Example4cdg">Repeat your password</label>
-                                        <span th:if="${#fields.hasErrors('Password')}" th:errors="*{repeatPassword}"></span>
+                                        <span th:if="${#fields.hasErrors('repeatPassword') }" th:errors="*{repeatPassword}"></span>
                                     </div>
 
 

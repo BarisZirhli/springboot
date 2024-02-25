@@ -6,10 +6,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,25 +20,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    @Autowired
-    private final UserServiceImp userService;
-    private final PasswordEncoder passwordEncoder;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Authentication.class);
+    private final UserServiceImp userService;
 
     @GetMapping("/login")
     public String loginGET(Model model, @RequestParam(name = "successMessage", required = false) String successMessage) {
         if (successMessage != null) {
             model.addAttribute("SuccessAttemption", successMessage);
         }
-        model.addAttribute("UserDTO", new UserDTO());
+        
         return "Login";
     }
 
     @PostMapping("/login")
     public String loginPOST(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
-
-        LOGGER.info("parameters" + email + " " + password);
+        LOGGER.info(email + " " + password);
         UserDetails user = userService.loadUserByUsername(email.toString());
         if (user != null) {
             LOGGER.info(user.getUsername() + " " + user.getPassword());
@@ -56,19 +51,19 @@ public class AuthenticationController {
     @GetMapping("/")
     public String registerFormGET(Model model) {
         model.addAttribute("UserDTO", new UserDTO());
+        LOGGER.info("Register Page Accessed");
         return "Register";
     }
 
     @PostMapping("/")
-    public String registerUser(@ModelAttribute("UserDTO") @Valid UserDTO userDTO, BindingResult bindingResult, Model model) {
+    public String registerUser(@ModelAttribute("UserDTO") @Valid UserDTO userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors() || userService.existUserwithEmail(userDTO.getEmail())) {
-            model.addAttribute("FailAttemption", "Registration Not Successful! Password or Email Invalid");
-            return "redirect:/";
+            LOGGER.info("Failured Login Page");
+            return "Register";
         } else {
-            model.addAttribute("SuccessAttemption", "Registration Successful!");
             userService.saveUser(userDTO);
+            LOGGER.info("Succesful For Login Page");
+            return "redirect:/login?successMessage=Registration+Successful!";
         }
-
-        return "redirect:/login?successMessage=Registration+Successful!";
     }
 }

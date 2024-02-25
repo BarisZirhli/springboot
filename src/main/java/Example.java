@@ -1,55 +1,39 @@
-
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-class m extends Thread {
-
-    
-    private int m;
-    
-    
-    @Override
-    public void run() {
-        for (int i = 0; i < 10; i++) {
-            try {
-                int randomNumber = (int) (Math.random() * 10 + 1);
-                long pid = ProcessHandle.current().pid();
-                long tid = Thread.currentThread().getId();
-                System.out.println("pid: " + pid + " random number: " + randomNumber + " tid: " + tid);
-                Thread.sleep(randomNumber * 1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(m.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-    }
-
-    public int getM() {
-        return m;
-    }
-
-    public void setM(int m) {
-        this.m = m;
-    }
-
-}
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Example {
+    public static void main(String[] args) {
+        // Örnek bir liste oluştur
+        List<Map<String, Object>> authors = new ArrayList<>();
 
-    public static void main(String[] args) throws InterruptedException {
+        // İlk yazarın bilgilerini ekle
+        Map<String, Object> author1 = new HashMap<>();
+        author1.put("name", "John Doe");
+        author1.put("age", 40);
+        author1.put("country", "USA");
+        authors.add(author1);
 
-        ArrayList<Thread> threadList = new ArrayList<>();
-        threadList.add(new m());
-        threadList.add(new m());
+        // İkinci yazarın bilgilerini ekle
+        Map<String, Object> author2 = new HashMap<>();
+        author2.put("name", "Jane Smith");
+        author2.put("age", 35);
+        author2.put("country", "UK");
+        authors.add(author2);
 
-        for (Thread thread : threadList) {
-            thread.start();
+        // Dönüştürücüyü kullanarak veriyi bir JSON dizesine dönüştür
+        ListMapConverter converter = new ListMapConverter();
+        String json = converter.convertToDatabaseColumn(authors);
+        System.out.println("JSON: " + json);
+
+        // JSON dizesini tekrar orijinal veri yapısına dönüştür
+        List<Map<String, Object>> convertedAuthors = converter.convertToEntityAttribute(json);
+
+        // Dönüştürülmüş veriyi kontrol et
+        System.out.println("Converted authors:");
+        for (Map<String, Object> author : convertedAuthors) {
+            System.out.println("Name: " + author.get("name") + ", Age: " + author.get("age") + ", Country: " + author.get("country"));
         }
-        for (Thread thread : threadList) {
-            thread.join();
-        }
-
     }
-
 }
