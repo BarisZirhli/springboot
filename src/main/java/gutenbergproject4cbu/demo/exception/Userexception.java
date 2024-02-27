@@ -1,8 +1,8 @@
 package gutenbergproject4cbu.demo.exception;
 
-public class UserException extends Exception {
+public class Userexception extends Exception {
 
-    public UserException(String message) {
+    public Userexception(String message) {
         super(message);
     }
 

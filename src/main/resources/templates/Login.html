@@ -27,17 +27,16 @@
                             <div class="card-body p-5">
                                 <h2 class="text-uppercase text-center mb-5">Login</h2>
 
-                                <!-- Success Message Area -->
+
                                 <div class="col-md-12" align="center">
                                     <div class="alert alert-success col-md-6" role="alert" th:if="${SuccessAttemption}">
                                         <p th:text="${SuccessAttemption}"></p>
                                     </div>
                                 </div>
 
-                                <!-- Login Form -->
 
-                                <form action="/login" method="POST">
-                                <form action="/login"th:object="${UserDTO}" method="POST">
+                                <form action="/public/login" method="POST">
+
 
                                     <div class="form-outline mb-4">
                                         <input type="text" id="email" name="email" class="form-control form-control-lg" required />
@@ -52,7 +51,7 @@
                                     </div>
                                 </form>
 
-                                <p class="text-center text-muted mt-4 mb-2">Have not an account? <a href="/"
+                                <p class="text-center text-muted mt-4 mb-2">Have not an account? <a href="/public/login"
                                                                                                     class="fw-bold text-body"><u>Create an account here</u></a></p>
                             </div>
                         </div>
@@ -62,7 +61,7 @@
         </div>
     </section>
 
-    <!-- JavaScript -->
+    
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

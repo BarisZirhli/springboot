@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,13 +37,16 @@ public class UserServiceImp implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final BookService bookService;
+    @Autowired
+    private final AuthenticationManager authenticationManager;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImp.class);
 
-    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder, BookService bookService) {
+    public UserServiceImp(@Lazy UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder, @Lazy BookService bookService, @Lazy AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.bookService = bookService;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -54,18 +58,45 @@ public class UserServiceImp implements UserService, UserDetailsService {
         role.setRoleName("USER");
         roles.add(role);
         user.setRoles(roles);
-
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.getRoles().forEach(myRole -> LOGGER.info(myRole.getRoleName() + " : here"));
+
+        user.getRoles().forEach(myRole -> LOGGER.info(user.getUsername() + " has " + myRole.getRoleName()));
+
         userRepository.save(user);
+    }
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User user = optionalUser.get();
+        LOGGER.info(user.getEmail());
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+
+        Set<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
+                .collect(Collectors.toSet());
+
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+    }
+
+    public Authentication authenticateUser(String email, String password) {
+
+        UserDetails userDetails = loadUserByUsername(email);
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+
+        return authenticationManager.authenticate(authenticationToken);
     }
 
     @Override
-    public void deleteUser(String email) {
+    public void deleteUser(String email) throws UsernameNotFoundException {
 
-        Optional<User> user = userRepository.findByEmail(email);
-        User u = user.get();
-        userRepository.delete(u);
+        User user = userRepository.findByEmail(email).get();
+        
+        if(user ==null)
+        userRepository.delete(user);
 
     }
 
@@ -87,29 +118,6 @@ public class UserServiceImp implements UserService, UserDetailsService {
         return userOptional.orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        User user = userRepository.findByEmail(email).orElse(null);
-
-        LOGGER.info(user.getEmail());
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found with email: " + email);
-        }
-
-        Set<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
-                .collect(Collectors.toSet());
-
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
-    }
-
-    public Authentication authenticateUser(String email, String password) {
-        UserDetails userDetails = loadUserByUsername(email);
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
-        return authenticationToken;
-
-    }
 
     @Override
     public void addFavoriteBook(Long bookId, String userId) throws BookException {

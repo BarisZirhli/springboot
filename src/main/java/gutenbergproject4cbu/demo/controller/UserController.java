@@ -26,7 +26,7 @@ public class UserController {
             @RequestParam(value = "userId") String userId) throws BookException {
         userService.addFavoriteBook(bookId, userId);
 
-        return "redirect:/dashboard";
+        return "redirect:/users/dashboard";
     }
 
     @GetMapping("/bookshelf/{userId}")

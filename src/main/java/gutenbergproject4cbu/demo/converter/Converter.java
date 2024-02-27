@@ -14,7 +14,7 @@ public class Converter implements AttributeConverter<Object, String> {
         try {
             return objectMapper.writeValueAsString(attribute);
         } catch (JsonProcessingException e) {
-            // Handle exception appropriately
+
             throw new RuntimeException("Error converting to JSON", e);
         }
     }
@@ -24,10 +24,10 @@ public class Converter implements AttributeConverter<Object, String> {
         try {
             return objectMapper.readValue(dbData, Object.class);
         } catch (JsonMappingException e) {
-            // Handle exception appropriately
+
             throw new RuntimeException("Error converting to Object", e);
         } catch (JsonProcessingException e) {
-            // Handle exception appropriately
+
             throw new RuntimeException("Error converting to Object", e);
         }
     }
