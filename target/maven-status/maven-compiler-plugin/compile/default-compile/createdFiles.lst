@@ -7,6 +7,7 @@ gutenbergproject4cbu\demo\DemoApplication.class
 gutenbergproject4cbu\demo\converter\Converter.class
 gutenbergproject4cbu\demo\controller\BookController.class
 gutenbergproject4cbu\demo\repository\UserRepository.class
+gutenbergproject4cbu\demo\security\CustomServiceDetails.class
 gutenbergproject4cbu\demo\converter\BookConverter$1.class
 gutenbergproject4cbu\demo\service\RoleService.class
 gutenbergproject4cbu\demo\service\RoleServiceImp.class
@@ -14,6 +15,7 @@ gutenbergproject4cbu\demo\converter\BookConverter.class
 gutenbergproject4cbu\demo\model\Book.class
 gutenbergproject4cbu\demo\service\UserServiceImp.class
 gutenbergproject4cbu\demo\DTO\UserDTO.class
+gutenbergproject4cbu\demo\security\CustomAuthenticationSuccessHandler.class
 ListMapConverter$1.class
 gutenbergproject4cbu\demo\service\BookServiceImp.class
 gutenbergproject4cbu\demo\exception\Userexception.class

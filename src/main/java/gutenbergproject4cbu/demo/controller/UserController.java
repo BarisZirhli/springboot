@@ -4,7 +4,6 @@ import gutenbergproject4cbu.demo.exception.BookException;
 import gutenbergproject4cbu.demo.model.Book;
 import gutenbergproject4cbu.demo.service.UserService;
 import org.springframework.ui.Model;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

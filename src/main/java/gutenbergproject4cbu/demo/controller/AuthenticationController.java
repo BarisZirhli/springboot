@@ -1,13 +1,11 @@
 package gutenbergproject4cbu.demo.controller;
 
 import gutenbergproject4cbu.demo.DTO.UserDTO;
+import gutenbergproject4cbu.demo.security.CustomServiceDetails;
 import gutenbergproject4cbu.demo.service.UserServiceImp;
 import jakarta.validation.Valid;
-import java.security.Principal;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -21,12 +19,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/public")
-@RequiredArgsConstructor
+
 public class AuthenticationController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
-
     private final UserServiceImp userService;
+    private CustomServiceDetails customServiceDetails;
+
+    public AuthenticationController(UserServiceImp userService, CustomServiceDetails customServiceDetails) {
+        this.userService = userService;
+        this.customServiceDetails = customServiceDetails;
+
+    }
 
     @GetMapping("/login")
     public String loginGET(Model model, @RequestParam(name = "successMessage", required = false) String successMessage) {
@@ -40,31 +44,34 @@ public class AuthenticationController {
     @PostMapping("/login")
     public String loginPOST(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
         LOGGER.info(email + " " + password);
-        UserDetails user = userService.loadUserByUsername(email);
+        UserDetails user = customServiceDetails.loadUserByUsername(email);
         if (user != null) {
             LOGGER.info(user.getUsername() + " " + user.getPassword());
-            Authentication authentication = userService.authenticateUser(email, password);
+            Authentication authentication = customServiceDetails.authenticateUser(email, password);
+            
 
             if (authentication != null && authentication.isAuthenticated()) {
                 LOGGER.info(user.getUsername() + " has " + authentication.getAuthorities());
                 LOGGER.info(authentication.getPrincipal().toString());
 
-                return "redirect:/users/dashboard"; 
+                return "redirect:/users/dashboard";
             }
+            return "redirect:/login?error";
         }
         return "redirect:/login?successMessage=Login+Fail";
     }
 
     @GetMapping("/register")
-    public String registerFormGET(Model model) {
+    public String registerFormGET(Model model
+    ) {
         model.addAttribute("UserDTO", new UserDTO());
         LOGGER.info("Register Page Accessed");
         return "Register";
     }
 
-   
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("UserDTO") @Valid UserDTO userDTO, BindingResult bindingResult) {
+    public String registerUser(@ModelAttribute("UserDTO")
+            @Valid UserDTO userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors() || userService.existUserwithEmail(userDTO.getEmail())) {
             LOGGER.info("Failured Login Page");
             return "Register";
@@ -74,4 +81,5 @@ public class AuthenticationController {
             return "redirect:/public/login?successMessage=Registration+Successful!";
         }
     }
+
 }

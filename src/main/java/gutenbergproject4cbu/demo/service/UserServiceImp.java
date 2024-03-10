@@ -7,8 +7,6 @@ import gutenbergproject4cbu.demo.model.Role;
 import gutenbergproject4cbu.demo.model.User;
 import gutenbergproject4cbu.demo.repository.UserRepository;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,43 +15,34 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Service
-public class UserServiceImp implements UserService, UserDetailsService {
+public class UserServiceImp implements UserService {
 
-    @Autowired
+  @Autowired
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final BookService bookService;
+
     @Autowired
-    private final AuthenticationManager authenticationManager;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImp.class);
-
-    public UserServiceImp(@Lazy UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder, @Lazy BookService bookService, @Lazy AuthenticationManager authenticationManager) {
+    @Lazy
+    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder, BookService bookService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.bookService = bookService;
-        this.authenticationManager = authenticationManager;
     }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImp.class);
 
     @Override
     public void saveUser(UserDTO userDTO) {
         User user = new User(userDTO.getUsername(), userDTO.getUserLastname(), userDTO.getEmail(), userDTO.getPassword());
         user.setId(UUID.randomUUID().toString());
-        List<Role> roles = new ArrayList<Role>();
+        Set<Role> roles = new HashSet<>();
         Role role = new Role();
         role.setRoleName("USER");
         roles.add(role);
@@ -64,39 +53,15 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
         userRepository.save(user);
     }
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        User user = optionalUser.get();
-        LOGGER.info(user.getEmail());
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found with email: " + email);
-        }
-
-        Set<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
-                .collect(Collectors.toSet());
-
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
-    }
-
-    public Authentication authenticateUser(String email, String password) {
-
-        UserDetails userDetails = loadUserByUsername(email);
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
-
-        return authenticationManager.authenticate(authenticationToken);
-    }
 
     @Override
     public void deleteUser(String email) throws UsernameNotFoundException {
 
         User user = userRepository.findByEmail(email).get();
-        
-        if(user ==null)
-        userRepository.delete(user);
+
+        if (user == null) {
+            userRepository.delete(user);
+        }
 
     }
 
@@ -118,7 +83,6 @@ public class UserServiceImp implements UserService, UserDetailsService {
         return userOptional.orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 
-
     @Override
     public void addFavoriteBook(Long bookId, String userId) throws BookException {
         User user = userRepository.findById(userId).orElse(null);
@@ -137,7 +101,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
     public List<Book> showBookList(String userId) throws BookException {
         User user = userRepository.findById(userId).orElse(null);
 
-        List<Book> bookList = new ArrayList<Book>();
+        List<Book> bookList = new ArrayList<>();
         if (user != null) {
             for (Long book : user.getFavoriteBooks()) {
                 bookList.add(bookService.fetchBooks(book).getResults().get(0));
