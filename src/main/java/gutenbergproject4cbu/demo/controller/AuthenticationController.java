@@ -48,7 +48,6 @@ public class AuthenticationController {
         if (user != null) {
             LOGGER.info(user.getUsername() + " " + user.getPassword());
             Authentication authentication = customServiceDetails.authenticateUser(email, password);
-            
 
             if (authentication != null && authentication.isAuthenticated()) {
                 LOGGER.info(user.getUsername() + " has " + authentication.getAuthorities());

@@ -5,6 +5,7 @@ import gutenbergproject4cbu.demo.model.User;
 import gutenbergproject4cbu.demo.repository.UserRepository;
 import java.util.Collection;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class CustomServiceDetails implements UserDetailsService {
 
     private final UserRepository userRepository;
+    @Autowired
     private final AuthenticationManager authenticationManager;
 
     public CustomServiceDetails(UserRepository userRepository, @Lazy AuthenticationManager authenticationManager) {
