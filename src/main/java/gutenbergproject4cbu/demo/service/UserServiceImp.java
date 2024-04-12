@@ -23,7 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @Service
 public class UserServiceImp implements UserService {
 
-  @Autowired
+    @Autowired
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final BookService bookService;
@@ -49,7 +49,7 @@ public class UserServiceImp implements UserService {
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-        user.getRoles().forEach(myRole -> LOGGER.info(user.getUsername() + " has " + myRole.getRoleName()));
+        user.getRoles().forEach(myRole -> LOGGER.info(user.getUsername() + " hasss " + myRole.getRoleName()));
 
         userRepository.save(user);
     }

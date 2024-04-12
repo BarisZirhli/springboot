@@ -2,10 +2,12 @@ package gutenbergproject4cbu.demo.controller;
 
 import gutenbergproject4cbu.demo.DTO.UserDTO;
 import gutenbergproject4cbu.demo.security.CustomServiceDetails;
+import gutenbergproject4cbu.demo.service.UserService;
 import gutenbergproject4cbu.demo.service.UserServiceImp;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -23,8 +25,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthenticationController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
-    private final UserServiceImp userService;
-    private CustomServiceDetails customServiceDetails;
+    @Autowired
+    private final UserService userService;
+    @Autowired
+    private final CustomServiceDetails customServiceDetails;
 
     public AuthenticationController(UserServiceImp userService, CustomServiceDetails customServiceDetails) {
         this.userService = userService;
@@ -51,13 +55,11 @@ public class AuthenticationController {
 
             if (authentication != null && authentication.isAuthenticated()) {
                 LOGGER.info(user.getUsername() + " has " + authentication.getAuthorities());
-                LOGGER.info(authentication.getPrincipal().toString());
-
                 return "redirect:/users/dashboard";
             }
             return "redirect:/login?error";
         }
-        return "redirect:/login?successMessage=Login+Fail";
+        return "redirect:/login";
     }
 
     @GetMapping("/register")

@@ -13,7 +13,7 @@
     <div class="container mt-4">
         <p class="text-center font-weight-bold" style="font-size:25px; color:white;">Gutenberg Search Engine</p>
 
-        <form action="/users/dashboard" method="POST"
+        <form action="/users/search" method="POST"
               class="input-group input-group-lg d-flex justify-content-center mt-4">
             <div class="input-group-prepend">
                 <span class="input-group-text ml-1" id="inputGroup-sizing-lg">Search a Book</span>
@@ -44,7 +44,7 @@
                                         <div class="container mb-2">
                                             <div class="row text-center">
                                                 <div class="col-md-4 ml-3 mr-3">
-                                                    <form action="@{/dashboard/addFavoriteBook}" method="POST">
+                                                    <form action="@{/public/dashboard/addFavoriteBook}" method="POST">
                                                         <input type="hidden" name="bookId" th:value="${book.id}" />
                                                         <div id='heart' name='heart' class='button' type='submit'> </div>                        
                                                     </form>

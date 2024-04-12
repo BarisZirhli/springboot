@@ -1,3 +1,5 @@
+/* global mojs */
+
 $(document).ready(function () {
     var scaleCurve = mojs.easing.path('M0,100 L25,99.9999983 C26.2328835,75.0708847 19.7847843,0 100,0');
     var buttons = document.getElementsByClassName('button');

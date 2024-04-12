@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 public class CustomServiceDetails implements UserDetailsService {
 
     private final UserRepository userRepository;
-    @Autowired
     private final AuthenticationManager authenticationManager;
 
     public CustomServiceDetails(UserRepository userRepository, @Lazy AuthenticationManager authenticationManager) {
@@ -41,7 +40,7 @@ public class CustomServiceDetails implements UserDetailsService {
 
     private Collection< ? extends GrantedAuthority> getAuthorities(Collection<Role> roles) {
         Collection< ? extends GrantedAuthority> mapRoles = roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName().toUpperCase()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
                 .collect(Collectors.toList());
         return mapRoles;
     }
